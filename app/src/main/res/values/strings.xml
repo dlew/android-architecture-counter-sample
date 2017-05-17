@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Counter</string>
+    <string name="label">Label…</string>
+    <string name="counter_removed">Counter removed</string>
+    <string name="named_counter_removed">\"%s\" removed</string>
+    <string name="undo">Undo</string>
+</resources>
