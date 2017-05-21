@@ -3,6 +3,7 @@ package net.danlew.counter
 import dagger.Component
 import net.danlew.counter.data.DataModule
 import net.danlew.counter.ui.CounterViewModel
+import net.danlew.counter.ui.MainActivity
 import javax.inject.Singleton
 
 @Component(
@@ -13,5 +14,6 @@ import javax.inject.Singleton
 )
 @Singleton
 interface AppComponent {
-  fun inject(into: CounterViewModel)
+  fun counterViewModel(): CounterViewModel
+  fun inject(mainActivity: MainActivity)
 }

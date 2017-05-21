@@ -9,10 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.support.v7.widget.helper.ItemTouchHelper.DOWN
-import android.support.v7.widget.helper.ItemTouchHelper.LEFT
-import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
-import android.support.v7.widget.helper.ItemTouchHelper.UP
+import android.support.v7.widget.helper.ItemTouchHelper.*
 import android.view.View
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -21,16 +18,21 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import net.danlew.counter.CounterApplication
 import net.danlew.counter.R
+import net.danlew.counter.ViewModelFactory
 import net.danlew.counter.data.CounterChange
 import net.danlew.counter.util.plus
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
   @BindView(R.id.coordinator_layout) lateinit var coordinatorLayout: CoordinatorLayout
   @BindView(R.id.recycler_view) lateinit var recyclerView: RecyclerView
   @BindView(R.id.create_button) lateinit var createButton: View
+
+  @Inject lateinit var viewModelFactory: ViewModelFactory
 
   private val layoutManager = LinearLayoutManager(this)
 
@@ -46,8 +48,10 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
     ButterKnife.bind(this)
+    (application as CounterApplication).appComponent.inject(this)
 
-    counterViewModel = ViewModelProviders.of(this).get(CounterViewModel::class.java)
+    counterViewModel = ViewModelProviders.of(this, viewModelFactory)
+        .get(CounterViewModel::class.java)
 
     recyclerView.layoutManager = layoutManager
     recyclerView.adapter = counterAdapter

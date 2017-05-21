@@ -1,19 +1,11 @@
 package net.danlew.counter.ui
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import net.danlew.counter.CounterApplication
+import android.arch.lifecycle.ViewModel
 import net.danlew.counter.data.AppDatabase
 import net.danlew.counter.data.Counter
 import javax.inject.Inject
 
-class CounterViewModel constructor(application: Application) : AndroidViewModel(application) {
-
-  @Inject lateinit var db: AppDatabase
-
-  init {
-    (application as CounterApplication).appComponent.inject(this)
-  }
+class CounterViewModel @Inject constructor(val db: AppDatabase) : ViewModel() {
 
   fun hasCounters() = db.counterModel().count() != 0
 
