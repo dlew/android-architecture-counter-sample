@@ -7,11 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.counter.view.*
 import net.danlew.counter.R
 import net.danlew.counter.data.Counter
 import net.danlew.counter.data.CounterChange
@@ -23,26 +19,20 @@ class CounterViewHolder(context: Context, parent: ViewGroup)
     private val DUMMY_COUNTER = Counter(-1)
   }
 
-  @BindView(R.id.counter_name) lateinit var counterName: EditText
-  @BindView(R.id.count) lateinit var count: TextView
-  @BindView(R.id.plus_button) lateinit var plusButton: Button
-  @BindView(R.id.minus_button) lateinit var minusButton: Button
-
   private var counter: Counter = DUMMY_COUNTER
   private lateinit var listener: Listener
 
   init {
-    ButterKnife.bind(this, itemView)
 
-    plusButton.setOnClickListener {
+    itemView.plus_button.setOnClickListener {
       listener.onCounterChange(CounterChange.Count(counter.id, 1))
     }
 
-    minusButton.setOnClickListener {
+    itemView.minus_button.setOnClickListener {
       listener.onCounterChange(CounterChange.Count(counter.id, -1))
     }
 
-    counterName.setOnEditorActionListener { v, actionId, event ->
+    itemView.counter_name.setOnEditorActionListener { v, actionId, event ->
       if (actionId == EditorInfo.IME_ACTION_DONE) {
         // If you try to clear focus immediately it doesn't work
         v.postDelayed({ v.clearFocus() }, 0)
@@ -50,7 +40,7 @@ class CounterViewHolder(context: Context, parent: ViewGroup)
       false
     }
 
-    counterName.addTextChangedListener(object : TextWatcher {
+    itemView.counter_name.addTextChangedListener(object : TextWatcher {
       override fun afterTextChanged(s: Editable)
           = listener.onCounterChange(CounterChange.Name(counter.id, s.toString())) ?: Unit
 
@@ -67,15 +57,15 @@ class CounterViewHolder(context: Context, parent: ViewGroup)
 
     this.listener = listener
     this.counter = counter
-    if (counterName.text.toString() != counter.name) {
-      counterName.setText(counter.name)
+    if (itemView.counter_name.text.toString() != counter.name) {
+      itemView.counter_name.setText(counter.name)
     }
-    count.text = counter.count.toString()
+    itemView.count.text = counter.count.toString()
   }
 
   fun detach() {
-    if (counterName.hasFocus()) {
-      counterName.clearFocus()
+    if (itemView.counter_name.hasFocus()) {
+      itemView.counter_name.clearFocus()
     }
   }
 

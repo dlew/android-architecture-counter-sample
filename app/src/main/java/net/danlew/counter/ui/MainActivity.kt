@@ -2,35 +2,25 @@ package net.danlew.counter.ui
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.support.v7.widget.helper.ItemTouchHelper.DOWN
-import android.support.v7.widget.helper.ItemTouchHelper.LEFT
-import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
-import android.support.v7.widget.helper.ItemTouchHelper.UP
-import android.view.View
-import butterknife.BindView
-import butterknife.ButterKnife
+import android.support.v7.widget.helper.ItemTouchHelper.*
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 import net.danlew.counter.R
 import net.danlew.counter.data.CounterChange
 import net.danlew.counter.util.plus
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
-
-  @BindView(R.id.coordinator_layout) lateinit var coordinatorLayout: CoordinatorLayout
-  @BindView(R.id.recycler_view) lateinit var recyclerView: RecyclerView
-  @BindView(R.id.create_button) lateinit var createButton: View
 
   private val layoutManager = LinearLayoutManager(this)
 
@@ -45,14 +35,13 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    ButterKnife.bind(this)
 
     counterViewModel = ViewModelProviders.of(this).get(CounterViewModel::class.java)
 
-    recyclerView.layoutManager = layoutManager
-    recyclerView.adapter = counterAdapter
-    recyclerView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
-    itemTouchHelper.attachToRecyclerView(recyclerView)
+    recycler_view.layoutManager = layoutManager
+    recycler_view.adapter = counterAdapter
+    recycler_view.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+    itemTouchHelper.attachToRecyclerView(recycler_view)
 
     // Always guarantee at least one counter, so the app doesn't open blank on a fresh run
     if (savedInstanceState == null) {
@@ -74,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         .observeOn(Schedulers.io())
         .subscribe(this::onCounterChangeRequested)
 
-    startDisposables += createButton.clicks().map { CounterChange.Create() }.subscribe(changeRequestRelay)
+    startDisposables += create_button.clicks().map { CounterChange.Create() }.subscribe(changeRequestRelay)
     startDisposables += counterAdapter.changes().subscribe(changeRequestRelay)
     startDisposables += counterAdapter.bind(counterViewModel.counters())
 
@@ -102,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         .map { counterAdapter.getPosition(it) }
         .filter { it != -1 }
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe { layoutManager.smoothScrollToPosition(recyclerView, null, it) }
+        .subscribe { layoutManager.smoothScrollToPosition(recycler_view, null, it) }
   }
 
   override fun onStop() {
@@ -154,7 +143,7 @@ class MainActivity : AppCompatActivity() {
             text = getString(R.string.counter_removed)
           }
 
-          Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG)
+          Snackbar.make(coordinator_layout, text, Snackbar.LENGTH_LONG)
               .setAction(R.string.undo, { changeRequestRelay.accept(CounterChange.UndoDelete(counter)) })
               .show()
         }
