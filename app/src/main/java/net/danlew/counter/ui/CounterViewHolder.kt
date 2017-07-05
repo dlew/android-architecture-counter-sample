@@ -42,7 +42,7 @@ class CounterViewHolder(context: Context, parent: ViewGroup)
       listener.onCounterChange(CounterChange.Count(counter.id, -1))
     }
 
-    counterName.setOnEditorActionListener { v, actionId, event ->
+    counterName.setOnEditorActionListener { v, actionId, _ ->
       if (actionId == EditorInfo.IME_ACTION_DONE) {
         // If you try to clear focus immediately it doesn't work
         v.postDelayed({ v.clearFocus() }, 0)
@@ -52,7 +52,7 @@ class CounterViewHolder(context: Context, parent: ViewGroup)
 
     counterName.addTextChangedListener(object : TextWatcher {
       override fun afterTextChanged(s: Editable)
-          = listener.onCounterChange(CounterChange.Name(counter.id, s.toString())) ?: Unit
+          = listener.onCounterChange(CounterChange.Name(counter.id, s.toString()))
 
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
