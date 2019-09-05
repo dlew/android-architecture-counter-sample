@@ -21,16 +21,16 @@ abstract class CounterDao {
   @Query("SELECT * FROM counter ORDER BY position")
   abstract fun counters(): Flowable<List<Counter>>
 
-  @Query("SELECT * FROM counter WHERE id = :p0")
+  @Query("SELECT * FROM counter WHERE id = :id")
   abstract fun counter(id: Long): Counter?
 
-  @Query("SELECT position FROM counter WHERE id = :p0")
+  @Query("SELECT position FROM counter WHERE id = :id")
   abstract fun position(id: Long): Long
 
-  @Query("SELECT position FROM counter WHERE position < :p0 ORDER BY position DESC LIMIT 1")
+  @Query("SELECT position FROM counter WHERE position < :position ORDER BY position DESC LIMIT 1")
   abstract fun previousPosition(position: Long): Long
 
-  @Query("SELECT position FROM counter WHERE position > :p0 ORDER BY position ASC LIMIT 1")
+  @Query("SELECT position FROM counter WHERE position > :position ORDER BY position ASC LIMIT 1")
   abstract fun nextPosition(position: Long): Long
 
   @Query("SELECT position FROM counter ORDER BY position DESC LIMIT 1")
@@ -41,18 +41,18 @@ abstract class CounterDao {
   }
 
   @Query("UPDATE counter " +
-      "SET count = (count + :p1) " +
-      "WHERE id = :p0")
+      "SET count = (count + :difference) " +
+      "WHERE id = :counterId")
   abstract fun modifyCount(counterId: Long, difference: Long)
 
   @Query("UPDATE counter " +
-      "SET name = :p1 " +
-      "WHERE id = :p0")
+      "SET name = :name " +
+      "WHERE id = :counterId")
   abstract fun modifyName(counterId: Long, name: String)
 
   @Query("UPDATE counter " +
-      "SET position = :p1 " +
-      "WHERE id = :p0")
+      "SET position = :position " +
+      "WHERE id = :counterId")
   abstract fun modifyPosition(counterId: Long, position: Long)
 
   // Positioning is done in such a way that we don't have to rewrite the whole db each time you change anything,
